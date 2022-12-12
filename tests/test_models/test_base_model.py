@@ -6,6 +6,7 @@ import unittest
 import os
 from models import base_model
 from models.base_model import BaseModel
+from models.user import User
 from datetime import datetime
 
 
@@ -57,17 +58,20 @@ class Test_Base_Model_outputs(unittest.TestCase):
         format
         """
         instance1 = BaseModel()
+        instance1_User = User()
         # test type of return
         self.assertEqual('<class \'dict\'>', str(type(instance1.to_dict())))
 
         updated_expected_format = instance1.updated_at.isoformat()
         created_expected_format = instance1.created_at.isoformat()
+        class_attr_value_expected = type(instance1_User).__name__
         updated_actual_format = instance1.to_dict()["updated_at"]
         created_actual_format = instance1.to_dict()["created_at"]
+        class_attr_value_get = instance1_User.to_dict()['__class__']
         # test format inside the dictionary
         self.assertEqual(updated_expected_format, updated_actual_format)
         self.assertEqual(created_expected_format, created_actual_format)
-        
+        self.assertEqual(class_attr_value_expected, class_attr_value_get)
 
 
 class TestBaseModelpep8(unittest.TestCase):
@@ -79,7 +83,7 @@ class TestBaseModelpep8(unittest.TestCase):
         base_mod = "models/base_model.py"
         test_base_mod = "tests/test_models/test_base_model.py"
         result = style.check_files([base_mod, test_base_mod])
-        
+        self.assertEqual(result.total_errors, 0)
 
 
 class TestDocsBaseModel(unittest.TestCase):
